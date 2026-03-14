@@ -1,10 +1,18 @@
 # Dausecure
 
+See the implementation roadmap in [ROADMAP.md](./ROADMAP.md).
+
 ## MVP Name
 Local Security IOC Analyst
 
 ## Core Pitch
 A local, privacy-first AI security tool that ingests malware-analysis artifacts and Apple-platform telemetry, extracts candidate IOCs with deterministic logic, then uses a local LLM to summarize and prioritize them.
+
+## Platform Focus
+This project is hyperfocused on `macOS` and `iOS` only.
+
+## Additional Feature Focus
+- browser/web protection as part of the overall security analysis and triage workflow
 
 ## Important Framing
 Do not describe this as:
@@ -17,6 +25,44 @@ Describe it as:
 
 ## Starting Source Index
 Use [Awesome Malware Analysis](https://github.com/rshipp/awesome-malware-analysis?tab=readme-ov-file#malware-collection) as the initial resource index for malware-analysis collections, IOC tooling, and related threat-intelligence references.
+
+## Resource Strategy
+The `awesome-malware-analysis` repository is best used as a curated index of sources, tooling, and testing inputs for the MVP.
+
+Important framing:
+
+- do not position this as a system that "predicts IOCs from malware"
+- position it as a pipeline that extracts and prioritizes likely IOCs from analysis artifacts and Apple telemetry
+- use malware samples and public analysis artifacts as testing inputs and validation data, not as the only product story
+
+## Most Useful Parts of the Source Index for This MVP
+Based on the referenced repository, the sections that fit this project best are:
+
+- `Malware Collection -> Malware Corpora`
+  - useful for locating public sample repositories and analysis-linked artifacts
+  - better for controlled research and validation than for making raw malware handling the center of the MVP
+- `Open Source Threat Intelligence -> Tools`
+  - especially relevant for IOC extraction and enrichment workflows such as `iocextract`, MISP, and related tooling
+- `Online Scanners and Sandboxes`
+  - useful for generating or consuming sandbox reports, behavior summaries, and structured analysis artifacts
+- `Detection and Classification`
+  - useful for YARA-driven matching, rule testing, hashing, and evidence-based scoring
+- `Browser Malware`
+  - directly relevant to the browser/web protection part of this project
+
+## What Is Most Relevant for macOS and iOS
+This source index is broad and not specifically focused on Apple platforms. For a `macOS` and `iOS` MVP, the most relevant usage is:
+
+- general IOC extraction from public malware writeups, YARA results, sandbox outputs, and published IOC lists
+- browser- and web-related malware analysis resources that support `browser/web protect`
+- cross-platform extraction tools such as `iocextract` and YARA that can still be applied to Apple-focused artifacts
+- your own normalized `macOS` telemetry as a first-class input
+
+Important limitation:
+
+- I did not find an `iOS`-specific section in the referenced repository page
+- `macOS` appears only incidentally in tool descriptions, not as a dedicated Apple malware collection section
+- that means the list is useful as a general malware-analysis index, but Apple-specific coverage should come from your telemetry pipeline and additional `macOS` / `iOS` threat-research sources over time
 
 ## Safe MVP Data Sources
 Use safe artifacts first:
@@ -55,6 +101,7 @@ Use regex and parsers first:
 - file paths
 - process names
 - bundle IDs
+- browser- and web-related indicators where relevant
 
 IOC-related tooling such as `iocextract` and MISP fit naturally into this stage.
 
@@ -101,3 +148,4 @@ Build a privacy-first pipeline that turns malware-analysis artifacts and Apple t
 - create a scoring engine with explainable evidence
 - add local Ollama triage prompts with structured outputs
 - build a simple analyst-facing case review UI
+- add browser/web protection signals for `macOS` and `iOS` threat scenarios
