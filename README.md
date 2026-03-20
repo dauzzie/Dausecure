@@ -8,6 +8,8 @@ Local Security IOC Analyst
 ## Core Pitch
 A local, privacy-first AI security tool that ingests malware-analysis artifacts and Apple-platform telemetry, extracts candidate IOCs with deterministic logic, then uses a local LLM to summarize and prioritize them.
 
+Optional external enrichment can be added through VirusTotal lookups for public indicators such as hashes, domains, and URLs.
+
 ## Platform Focus
 This project is hyperfocused on `macOS` and `iOS` only.
 
@@ -75,6 +77,10 @@ Use safe artifacts first:
 - published IOC lists
 - normalized macOS telemetry from your own collector
 
+Optional enrichment inputs:
+
+- VirusTotal lookups for hashes, domains, and URLs that were already extracted locally
+
 This is enough to prove the system without making raw malware handling the center of the project.
 
 ## MVP Architecture
@@ -114,7 +120,23 @@ Use simple evidence-based scoring:
 - appears only once in noisy text: `+5`
 - matches allowlist: `-40`
 
-### 4. Incident Builder
+### 4. Optional Threat Intel Enrichment
+After deterministic extraction, enrich public indicators without making enrichment the source of truth.
+
+Suggested VirusTotal usage for the MVP:
+
+- file hash lookups for known malware or suspicious binaries
+- domain reputation lookups for browser/web protection cases
+- URL lookups for phishing or fake update scenarios
+- evidence attachment such as last analysis stats, labels, and report links
+
+Important constraints:
+
+- keep local extraction and scoring as the primary detection logic
+- prefer hash, domain, and URL lookup before any raw file upload workflow
+- treat VirusTotal as enrichment and validation, not as the product's core detection engine
+
+### 5. Incident Builder
 Group related findings into a case:
 
 - source report
@@ -123,7 +145,7 @@ Group related findings into a case:
 - confidence
 - notes
 
-### 5. Local LLM Triage
+### 6. Local LLM Triage
 Run locally with Ollama for summarization and prioritization over the extracted case data.
 
 Integration assumptions for the MVP:
@@ -134,7 +156,7 @@ Integration assumptions for the MVP:
 - local execution to keep prompts and data on-device
 
 ## MVP Goal
-Build a privacy-first pipeline that turns malware-analysis artifacts and Apple telemetry into normalized cases with extracted IOCs, confidence scores, and local-LLM triage summaries.
+Build a privacy-first pipeline that turns malware-analysis artifacts and Apple telemetry into normalized cases with extracted IOCs, confidence scores, optional VirusTotal enrichment, and local-LLM triage summaries.
 
 ## Non-Goals for the MVP
 - raw malware execution as the central workflow
@@ -146,6 +168,7 @@ Build a privacy-first pipeline that turns malware-analysis artifacts and Apple t
 - define a normalized event and report schema
 - build deterministic extractors and allowlists
 - create a scoring engine with explainable evidence
+- add a VirusTotal enrichment client for extracted hashes, domains, and URLs
 - add local Ollama triage prompts with structured outputs
 - build a simple analyst-facing case review UI
 - add browser/web protection signals for `macOS` and `iOS` threat scenarios

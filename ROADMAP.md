@@ -14,6 +14,7 @@ The intended shape of the product is:
 
 - a `macOS` local agent for data collection and analysis
 - an `iOS` companion experience for alerts, review, and lightweight security workflows
+- optional threat-intel enrichment for extracted public indicators
 - a local LLM triage layer that summarizes and prioritizes cases without becoming the source of truth
 
 ## Scope Principles
@@ -22,6 +23,7 @@ The intended shape of the product is:
 - `macOS` is the primary endpoint for deep visibility
 - `iOS` is a constrained companion surface, not a full low-level endpoint agent
 - browser/web protection is a focused vertical inside the broader Apple security story
+- external providers such as VirusTotal are enrichment layers, not primary detection logic
 
 ## Phase 0: Foundation
 Goal: define a credible MVP boundary and the data model.
@@ -135,6 +137,27 @@ Exit criteria:
 
 - each case shows why it was created and why the confidence score was assigned
 
+## Phase 3.5: Optional Threat Intel Enrichment
+Goal: attach external context to extracted indicators without weakening the local-first product story.
+
+Initial VirusTotal scope:
+
+- file hash lookup
+- domain lookup
+- URL lookup
+- local caching of enrichment responses
+
+Deliverables:
+
+- provider-agnostic enrichment schema
+- VirusTotal client for supported IOC types
+- response normalization for verdict counts, labels, reputation, and permalinks
+- clear separation between local confidence score and third-party enrichment
+
+Exit criteria:
+
+- a case can show VirusTotal enrichment alongside local evidence without treating it as the source of truth
+
 ## Phase 4: `macOS` Agent MVP
 Goal: collect a small set of local Apple security signals worth triaging.
 
@@ -232,10 +255,14 @@ These are the best milestones for demonstrating cybersecurity and AI capability 
 - correlate local events with artifact-derived indicators
 
 ### Milestone 3
+- add VirusTotal enrichment for hashes, domains, and URLs
+- surface external context separately from local scoring
+
+### Milestone 4
 - add local Ollama triage with structured output
 - show analyst-facing case summaries
 
-### Milestone 4
+### Milestone 5
 - add browser/web protection scenarios
 - add `iOS` companion review flow
 
@@ -245,6 +272,7 @@ The MVP is successful if it can:
 - ingest safe public artifacts and local `macOS` signals
 - extract and normalize IOCs deterministically
 - build explainable incident cases
+- optionally enrich supported indicators with VirusTotal
 - summarize and prioritize those cases with a local LLM
 - clearly show Apple-platform focus and privacy-first design
 
@@ -253,7 +281,8 @@ The MVP is successful if it can:
 2. Build the ingestion pipeline for reports, sandbox JSON, IOC lists, and local event JSON.
 3. Implement deterministic extraction and normalization.
 4. Add scoring and incident construction.
-5. Add a basic `macOS` collector or test event feed.
-6. Integrate Ollama for structured local triage.
-7. Add browser/web protection rules and examples.
-8. Add a minimal `iOS` companion or review layer.
+5. Add VirusTotal enrichment for extracted hashes, domains, and URLs.
+6. Add a basic `macOS` collector or test event feed.
+7. Integrate Ollama for structured local triage.
+8. Add browser/web protection rules and examples.
+9. Add a minimal `iOS` companion or review layer.
